@@ -5,7 +5,7 @@ const mongoURI="mongodb+srv://fakhruddin:P1Jr8tthxXwfO24N@cluster0.xc6glys.mongo
 const  connectToMongo= async()=>{
     try{
         await mongoose.connect(mongoURI);
-        console.log("Mongoose Databse Connected");
+        console.log("Mongoose Database Connected");
     }catch(err){
         console.log("Error connection to Database: ",err);
     };
