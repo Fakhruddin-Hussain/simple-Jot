@@ -1,8 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const User=require('../models/Users');
-const { body, query, validationResult } = require('express-validator');
-
+const { body,validationResult} = require('express-validator');
 
 // create a new user using : POST "/api/auth/". doesn't require Auth
 // router.post('/',[
@@ -17,16 +16,25 @@ const { body, query, validationResult } = require('express-validator');
 //     }).then(user => res.json(user));
 // });
 
-router.post('/',async(req,res)=>{
-  const {name ,email ,password} = req.body;
-  try{
-    const user = await User.create({name,email,password});
-    return res.json(user);
-  }catch(err){
-    console.log("Error: ",err)
-    return res.status(500).send('Server Error')
-  }
-})
+router.post('/',[
+  body('name',"Enter a valid Name").notEmpty().isLength({min:3}),
+  body('email',"Enter a valid Email").notEmpty().isEmail(),
+  body('password',"Password must be at least 5 characters").notEmpty().isLength({min:8})
+]
+  ,async(req,res)=>{
+    const result = validationResult(req);
+    if(result.isEmpty()){
+      const {name ,email ,password} = req.body;
+      try{
+        const user = await User.create({name,email,password});
+        return res.json(user);
+      }catch(err){
+        console.log("Error: ",err)
+        return res.status(500).json({error: "Server Error", message:err.message})
+      }
+    }
+    res.send({ errors: result.array() });
+});
 
 
 module.exports = router;
