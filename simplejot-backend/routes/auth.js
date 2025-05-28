@@ -16,7 +16,8 @@ const { body,validationResult} = require('express-validator');
 //     }).then(user => res.json(user));
 // });
 
-router.post('/',[
+// create a new user using : POST "/api/auth/createuser". doesn't require Auth
+router.post('/createuser',[
   body('name',"Enter a valid Name").notEmpty().isLength({min:3}),
   body('email',"Enter a valid Email").notEmpty().isEmail(),
   body('password',"Password must be at least 5 characters").notEmpty().isLength({min:8})
@@ -25,7 +26,13 @@ router.post('/',[
     const result = validationResult(req);
     if(result.isEmpty()){
       const {name ,email ,password} = req.body;
+      // searching for an existing email
+      let user = await User.findOne({email:email});
+      if(user){
+        return res.status(400).json({error:"Sorry a user with this email already exists"});
+      };
       try{
+        // creating a new user using Users models
         const user = await User.create({name,email,password});
         return res.json(user);
       }catch(err){
