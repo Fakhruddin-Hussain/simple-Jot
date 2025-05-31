@@ -8,19 +8,6 @@ var jwt = require('jsonwebtoken');
 const JWT_SECRET = "@very$ecured$ecret";
 
 
-// create a new user using : POST "/api/auth/". doesn't require Auth
-// router.post('/',[
-//     body('email').isEmail(),
-//     body('name').isLength({ min: 3 }),
-//     body('password').isLength({ min: 5 })
-// ] ,(req,res)=>{
-//     User.create({
-//       name: req.body.name,
-//       email: req.body.email,
-//       password: req.body.password,
-//     }).then(user => res.json(user));
-// });
-
 // create a new user using : POST "/api/auth/createuser". doesn't require Auth
 router.post('/createuser',[
   body('name',"Enter a valid Name").notEmpty().isLength({min:3}),
@@ -65,5 +52,18 @@ router.post('/createuser',[
     res.send({ errors: result.array() });
 });
 
+// create a new user using : POST "/api/auth/createuser". doesn't require Auth
+router.post('/createuser',[
+  body('email',"Enter a valid Email").notEmpty().isEmail(),
+  body('password',"Password cannot be empty").notEmpty()
+]
+  ,async(req,res)=>{
+    const result = validationResult(req);
+    if(result.isEmpty()){
+      
+    }
+    res.send({errors: result.array()});
+  }
+);
 
 module.exports = router;
