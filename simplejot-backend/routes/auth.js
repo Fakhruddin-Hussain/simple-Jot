@@ -4,11 +4,12 @@ const User=require('../models/Users');
 const { body,validationResult} = require('express-validator');
 const bcrypt = require('bcryptjs');
 var jwt = require('jsonwebtoken');
+var fetchuser = require('../middleware/fetchuser');
 
 const JWT_SECRET = "@very$ecured$ecret";
 
 
-// create a new user using : POST "/api/auth/createuser". doesn't require Auth
+// Route 1: create a new user using : POST "/api/auth/createuser". doesn't require Auth
 router.post('/createuser',[
   body('name',"Enter a valid Name").notEmpty().isLength({min:3}),
   body('email',"Enter a valid Email").notEmpty().isEmail(),
@@ -52,7 +53,7 @@ router.post('/createuser',[
     res.send({ errors: result.array() });
 });
 
-// create a new user using : POST "/api/auth/createuser". doesn't require Auth
+// Route 2: create a new user using : POST "/api/auth/login". doesn't require Login
 router.post('/login',[
   body('email',"Enter a valid Email").notEmpty().isEmail(),
   body('password',"Password cannot be empty").notEmpty()
@@ -66,15 +67,18 @@ router.post('/login',[
         if (!user){
           return res.status(400).json({error : "Please try to login with correct credentials"})
         }
+        // Compare the password given by the user with the hashed password which is saved in db
         const passwordCompare= await bcrypt.compare(password,user.password);
         if (!passwordCompare){
           return res.status(400).json({error: "Please try to login with correct credentials"})
         }
+        // create the user id as payload and then a signed JWT to compare with the signed JWT in the mongo db
         const payload = {
           user:{
             id: user.id
           }
         }
+        console.log(payload);
         const authtoken= jwt.sign(payload, JWT_SECRET);
         res.json({authtoken});
       }catch(err){
@@ -87,5 +91,20 @@ router.post('/login',[
     }
   }
 );
+
+// Route 3: Get logged in user details using : POST "/api/auth/getuser". Login required
+router.post('/getuser',fetchuser,
+  async (req, res) =>{
+  try{
+    const userId= req.user.id;
+    const user = await User.findById(userId).select("-password");
+    res.send(user);
+  }catch(err){
+        console.log("Error: ",err);
+        res.status(500).json({error: "Server Error", message:err.message})
+      }
+  }
+);
+
 
 module.exports = router;
