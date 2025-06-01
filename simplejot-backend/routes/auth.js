@@ -53,7 +53,7 @@ router.post('/createuser',[
 });
 
 // create a new user using : POST "/api/auth/createuser". doesn't require Auth
-router.post('/createuser',[
+router.post('/login',[
   body('email',"Enter a valid Email").notEmpty().isEmail(),
   body('password',"Password cannot be empty").notEmpty()
 ]
@@ -62,7 +62,7 @@ router.post('/createuser',[
     if(result.isEmpty()){
       
     }
-    res.send({errors: result.array()});
+    res.status(400).json({errors: result.array()});
   }
 );
 
