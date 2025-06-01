@@ -60,9 +60,31 @@ router.post('/login',[
   ,async(req,res)=>{
     const result = validationResult(req);
     if(result.isEmpty()){
-      
+      const {email,password}= req.body;
+      try{
+        let user = await User.findOne({email});
+        if (!user){
+          return res.status(400).json({error : "Please try to login with correct credentials"})
+        }
+        const passwordCompare= await bcrypt.compare(password,user.password);
+        if (!passwordCompare){
+          return res.status(400).json({error: "Please try to login with correct credentials"})
+        }
+        const payload = {
+          user:{
+            id: user.id
+          }
+        }
+        const authtoken= jwt.sign(payload, JWT_SECRET);
+        res.json({authtoken});
+      }catch(err){
+        console.log("Error: ",err);
+        return res.status(500).json({error: "Server Error", message:err.message})
+
+      }
+    } else{
+      return res.status(400).json({errors: result.array()});
     }
-    res.status(400).json({errors: result.array()});
   }
 );
 
