@@ -13,7 +13,7 @@ const JWT_SECRET = "@very$ecured$ecret";
 router.post('/createuser',[
   body('name',"Enter a valid Name").notEmpty().isLength({min:3}),
   body('email',"Enter a valid Email").notEmpty().isEmail(),
-  body('password',"Password must be at least 5 characters").notEmpty().isLength({min:8})
+  body('password',"Password must be at least 8 characters").notEmpty().isLength({min:8})
 ]
   ,async(req,res)=>{
     const result = validationResult(req);
