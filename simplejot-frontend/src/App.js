@@ -1,18 +1,28 @@
 import './App.css';
 import {
   BrowserRouter as Router,
-  Switch,
+  Routes,
   Route,
   Link
 } from "react-router-dom";
 import Navbar from './components/Navbar'
+import Home from './components/Home'
+import About from './components/About';
 
 function App() {
   return (
     <>
-    <Navbar/>
-      <h1>This is My Simple Jot Notebook App</h1>
-
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route exact path="/about">
+            <About />
+          </Route>
+          <Route exact path="/">
+            <Home />
+          </Route>
+        </Routes>
+      </Router>
     </>
   );
 }
