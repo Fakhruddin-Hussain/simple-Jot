@@ -1,4 +1,5 @@
 import './App.css';
+import Alert from './components/Alert';
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,6 +14,7 @@ function App() {
     <>
     <NoteState>
       <Router>
+        <Alert message="This is an Alert message"/>
         <Navbar />
         <Routes>
           <Route exact path="/about" element={<About/>}>
