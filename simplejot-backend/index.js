@@ -14,5 +14,5 @@ app.get('/test-route', (req, res) => {
 
 
 app.listen(port, () => {
-  console.log(`App listening on port ${port}`)
+  console.log(`Simple-Jot App listening on port ${port}`)
 })
