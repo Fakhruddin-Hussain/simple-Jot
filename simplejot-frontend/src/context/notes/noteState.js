@@ -3,7 +3,6 @@ import { useState } from "react";
 const host = "http://localhost:5001"
 
 const NoteState = (props) => {
-      date: "2025-06-03T17:23:39.942Z",
 
   const initialNotes = [];
   const [notes, setNotes] = useState(initialNotes);
