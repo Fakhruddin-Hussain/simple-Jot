@@ -9,6 +9,7 @@ const Notes = () => {
     const { notes, getNotes, editNote } = context;
     useEffect(() => {
         getNotes();
+        // eslint-disable-next-line
     }, []);
     const ref = useRef(null);
     const refClose = useRef(null);

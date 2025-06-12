@@ -53,7 +53,7 @@ const NoteState = (props) => {
   }
 
   // Delete an existing note
-  const deleteNote = async(id) => {
+  const deleteNote = async (id) => {
     // TODO: API Call
     const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
       method: 'DELETE',
@@ -91,10 +91,23 @@ const NoteState = (props) => {
     //     element.tag = tag;
     //   }
     // }
-  }
+  };
+
+  // Login using email and password
+  const login = async (email,password) => {
+    const response = await fetch(`${host}/api/auth/login`, {
+      method: 'POST',
+      body: JSON.stringify({ email, password }),
+      headers: {
+        'content-type': 'application/json'
+      },
+    });
+    const json = await response.json();
+    console.log(json);
+  };
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, getNotes }}>
+    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, getNotes,login }}>
       {props.children}
     </NoteContext.Provider>
   );
