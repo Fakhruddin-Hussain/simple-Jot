@@ -11,6 +11,7 @@ const Notes = () => {
         getNotes();
     }, []);
     const ref = useRef(null);
+    const refClose = useRef(null);
 
     const [note,setNote] = useState({id:"", etitle:"",edescription:"",etag:""})
     
@@ -22,6 +23,7 @@ const Notes = () => {
         console.log("Updating note",note)
         e.preventDefault();
         editNote(note.id,note.etitle,note.edescription,note.etag);
+        refClose.current.click();
       }
       const onChange=(e)=>{
         setNote({...note,[e.target.name]:e.target.value})
@@ -57,13 +59,13 @@ const Notes = () => {
                             </form>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            <button type="button" ref={refClose} className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                             <button type="button" onClick={handleClick} className="btn btn-primary">Update Note</button>
                         </div>
                     </div>
                 </div>
             </div>
-            <div classNameName='row my-3'>
+            <div className='row my-3'>
                 <h2>Your Notes</h2>
                 {notes.map((note) => {
                     return <NoteItem note={note} updateNote={updateNote} />;
