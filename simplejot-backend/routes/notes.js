@@ -8,6 +8,7 @@ const { body,validationResult} = require('express-validator');
 
 // Route 1: Get all the notes of a user using : POST "/api/notes/fetchallnotes". Login required
 router.get('/fetchallnotes', fetchuser,async (req,res)=>{
+    let success = false;
     try{
         const notes = await Note.find({user:req.user.id})
         res.json(notes)

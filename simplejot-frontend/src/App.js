@@ -11,12 +11,14 @@ import About from './components/About';
 import NoteState from './context/notes/noteState';
 import Login from './components/Login';
 import Signup from './components/Signup';
+
+
 function App() {
   return (
     <>
     <NoteState>
       <Router>
-        <Alert message="This is an Alert message"/>
+        <Alert />
         <Navbar />
         <Routes>
           <Route exact path="/about" element={<About/>}>

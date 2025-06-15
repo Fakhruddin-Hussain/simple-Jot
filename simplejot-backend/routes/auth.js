@@ -16,13 +16,14 @@ router.post('/createuser',[
   body('password',"Password must be at least 8 characters").notEmpty().isLength({min:8})
 ]
   ,async(req,res)=>{
+    let success =false;
     const result = validationResult(req);
     if(result.isEmpty()){
       const {name ,email ,password} = req.body;
       // searching for an existing email
       let existinguser = await User.findOne({email:email});
       if(existinguser){
-        return res.status(400).json({error:"Sorry a user with this email already exists"});
+        return res.status(400).json({success,error:"Sorry a user with this email already exists"});
       };
       try{
         // secure the password using bcrypt hash adding salt to the encrypted password
@@ -42,15 +43,16 @@ router.post('/createuser',[
         const authtoken = jwt.sign(data, JWT_SECRET );
         // console.log(jwtData);
 
+        success=true;
         // returning just the authoken as opposed to sending the full user data before
-        return res.json({authtoken});
+        return res.json({success, authtoken});
         // return res.json(user);
       }catch(err){
         console.log("Error: ",err)
-        return res.status(500).json({error: "Server Error", message:err.message})
+        return res.status(500).json({success, error: "Server Error", message:err.message})
       }
     }
-    res.send({ errors: result.array() });
+    res.send({ error: result.array()[0].msg });
 });
 
 // Route 2: create a new user using : POST "/api/auth/login". doesn't require Login
@@ -59,18 +61,19 @@ router.post('/login',[
   body('password',"Password cannot be empty").notEmpty()
 ]
   ,async(req,res)=>{
+    let success= false
     const result = validationResult(req);
     if(result.isEmpty()){
       const {email,password}= req.body;
       try{
         let user = await User.findOne({email});
         if (!user){
-          return res.status(400).json({error : "Please try to login with correct credentials"})
+          return res.status(400).json({success, error : "Please try to login with correct credentials"})
         }
         // Compare the password given by the user with the hashed password which is saved in db
         const passwordCompare= await bcrypt.compare(password,user.password);
         if (!passwordCompare){
-          return res.status(400).json({error: "Please try to login with correct credentials"})
+          return res.status(400).json({ success, error: "Please try to login with correct credentials"})
         }
         // create the user id as payload and then a signed JWT to compare with the signed JWT in the mongo db
         const payload = {
@@ -80,14 +83,14 @@ router.post('/login',[
         }
         console.log(payload);
         const authtoken= jwt.sign(payload, JWT_SECRET);
-        res.json({authtoken});
+        success = true;
+        return res.json({ success, authtoken});
       }catch(err){
         console.log("Error: ",err);
-        return res.status(500).json({error: "Server Error", message:err.message})
-
+        return res.status(500).json({success, error: "Server Error", message:err.message})
       }
     } else{
-      return res.status(400).json({errors: result.array()});
+      return res.status(400).json({success, errors: result.array()});
     }
   }
 );
@@ -98,10 +101,10 @@ router.post('/getuser',fetchuser,
   try{
     const userId= req.user.id;
     const user = await User.findById(userId).select("-password");
-    res.send(user);
+    return res.send(user);
   }catch(err){
         console.log("Error: ",err);
-        res.status(500).json({error: "Server Error", message:err.message})
+        res.status(500).json({success, error: "Server Error", message:err.message})
       }
   }
 );

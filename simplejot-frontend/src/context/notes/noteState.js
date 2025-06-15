@@ -3,7 +3,16 @@ import { useState } from "react";
 const host = "http://localhost:5001"
 
 const NoteState = (props) => {
-
+  const [alert,setAlert]=useState(null);
+  const showAlert=(message,type)=>{
+    setAlert({
+      message:message,
+      type:type
+    });
+    setTimeout(() => {
+      setAlert(null);
+    }, 2000);
+  }
   const initialNotes = [];
   const [notes, setNotes] = useState(initialNotes);
   // Get all Notes
@@ -64,6 +73,7 @@ const NoteState = (props) => {
     });
     const json = await response.json();
     console.log(json);
+    showAlert("Note Deleted Successfully","success")
     getNotes();
     // setNotes(notes.filter(note => note._id !== id))
   }
@@ -103,11 +113,24 @@ const NoteState = (props) => {
       },
     });
     const json = await response.json();
-    console.log(json);
+    return json;
+  };
+
+  // Login using email and password
+  const signup = async (name,email,password) => {
+    const response = await fetch(`${host}/api/auth/createuser`, {
+      method: 'POST',
+      body: JSON.stringify({name, email, password }),
+      headers: {
+        'content-type': 'application/json'
+      },
+    });
+    const json = await response.json();
+    return json;
   };
 
   return (
-    <NoteContext.Provider value={{ notes, addNote, deleteNote, editNote, getNotes,login }}>
+    <NoteContext.Provider value={{ notes,alert, addNote, deleteNote, editNote, getNotes,login,signup,showAlert }}>
       {props.children}
     </NoteContext.Provider>
   );

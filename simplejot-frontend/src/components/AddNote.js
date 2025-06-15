@@ -3,7 +3,7 @@ import NoteContext from '../context/notes/noteContext'
 
 function AddNote() {
   const context = useContext(NoteContext);
-  const { addNote } = context;
+  const { addNote ,showAlert } = context;
   const [note, setNote] = useState({ title: "", description: "", tag: "" });
   const formRef = useRef(null);
 
@@ -14,6 +14,7 @@ function AddNote() {
       return;
     }
     addNote(note.title, note.description, note.tag);
+    showAlert("Note Added Successfully","success");
     setNote({ title: "", description: "", tag: "" });
   }
   const onChange = (e) => {

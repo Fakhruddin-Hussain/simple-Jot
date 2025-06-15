@@ -6,7 +6,7 @@ import AddNote from './AddNote';
 
 const Notes = () => {
     const context = useContext(NoteContext);
-    const { notes, getNotes, editNote } = context;
+    const { notes, getNotes, editNote, showAlert } = context;
     useEffect(() => {
         getNotes();
         // eslint-disable-next-line
@@ -29,6 +29,7 @@ const Notes = () => {
         }
         console.log("Updating note", note)
         editNote(note.id, note.etitle, note.edescription, note.etag);
+        showAlert("Note Updated Succesfully","success");
         refClose.current.click();
     }
     const onChange = (e) => {
