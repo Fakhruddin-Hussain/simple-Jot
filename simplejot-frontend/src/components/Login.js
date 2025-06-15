@@ -14,8 +14,8 @@ const Login = () => {
         console.log(json);
         if (json.success){
             localStorage.setItem('token',json.authtoken);
-            navigate('/');
             showAlert("Logged in Succesfully","success")
+            navigate('/');
         }else(
             showAlert(json.error,"danger")
         )
@@ -24,7 +24,8 @@ const Login = () => {
         setCred({...cred,[e.target.name]:e.target.value})
     }
     return (
-        <div className='container my-3'>
+        <div className='container mt-5'>
+            <h2 className='my-2'>Login To Continue to Simple-Jot</h2>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="email" className="form-label">Email address</label>
